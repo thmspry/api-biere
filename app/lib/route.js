@@ -63,9 +63,6 @@ const routes = [
         path: '/api/v1/biere/delete/{id}',
         handler: beerControleur.deleteById
     },
-        path: '/api/v1/brasserie/populate',
-        handler: brewerieControleur.populateBreweries
-    },
     {
         method: 'GET',
         path: '/api/v1/biere',
