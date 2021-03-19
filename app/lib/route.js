@@ -43,6 +43,31 @@ const routes = [
         path: '/api/v1/brasserie/populate',
         handler: brewerieControleur.populateBreweries
     },
+
+    /*
+        Ajout d'une brasserie
+     */
+    {
+        method: 'POST',
+        path: '/api/v1/brasserie',
+        options: {
+            description: 'Ajoute une brasserie',
+            notes: 'La brasserie doit être dans l entête de la requette',
+            plugins: {
+                'hapi-swagger': {
+                    responses: {
+                        '200': {
+                            'description': 'Bonne requête'
+                        }
+                    },
+
+                }
+            },
+            tags: ['api', 'post', 'add'],
+            handler: brewerieControleur.add
+        },
+
+    },
     {
         method: 'GET',
         path: '/api/v1/biere/byId/{id}',
