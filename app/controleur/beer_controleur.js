@@ -28,12 +28,6 @@ module.exports = {
     getAll: async (request,h) => {
         const result = await Models.Beer.findAll();
         return h.response(result).code(200);
-const Beer = require('../model').Beer;
-
-module.exports = {
-    getAll: async (request,h) => {
-        const result = await Models.Beer.findAll();
-        return h.response(result).code(200);
     },
     findById: async (request,h) => {
         const id = request.params.id
