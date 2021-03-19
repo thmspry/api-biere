@@ -37,7 +37,16 @@ const routes = [
 
         },
 
-    },
+    },{
+        method: 'GET',
+        path: '/api/v1/biere/{id}',
+        handler: Beer.findById
+    }
+    ,{
+        method: 'GET',
+        path: '/api/v1/bieres/{state}',
+        handler : Beer.findByState
+    },{},{},
     {
         method: 'GET',
         path: '/api/v1/brasserie/populate',
