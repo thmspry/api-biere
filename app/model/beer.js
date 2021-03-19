@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    Beer = sequelize.define("beers", {
+    const Beer = sequelize.define("beers", {
         // Model attributes are defined here
         id: {
             type: DataTypes.INTEGER,
