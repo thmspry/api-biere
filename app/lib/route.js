@@ -10,6 +10,7 @@ const schemaBrewery = Joi.object({
 const schemaBreweries =  Joi.array().items(schemaBrewery);
 
 const brewerieControleur = require("../controleur/brewerie_controleur");
+const beerControleur = require("../controleur/beer_controleur");
 const routes = [
     {
         method: 'GET',
@@ -30,31 +31,34 @@ const routes = [
 
                 }
             },
-
             tags: ['api'],
             handler:  brewerieControleur.getAll
-
-
         },
-
-    },{
-        method: 'GET',
-        path: '/api/v1/biere/byId/{id}',
-        handler: Beer.findById
-    }
-    ,{
-        method: 'GET',
-        path: '/api/v1/biere/byState/{state}',
-        handler : Beer.findByState
-    },{
-        method: 'GET',
-        path: '/api/v1/biere/byBrewId/{breweryId}',
-        handler: Beer.findByBrewId
-    },{},
+    },
     {
         method: 'GET',
         path: '/api/v1/brasserie/populate',
         handler: brewerieControleur.populateBreweries
-    }
+    },
+    {
+        method: 'GET',
+        path: '/api/v1/biere/byId/{id}',
+        handler: beerControleur.findById
+    },
+    {
+        method: 'GET',
+        path: '/api/v1/biere/byState/{state}',
+        handler : beerControleur.findByState
+    },
+    {
+        method: 'GET',
+        path: '/api/v1/biere/byBrewId/{breweryId}',
+        handler: beerControleur.findByBrewId
+    },
+    {
+        method: 'GET',
+        path: '/api/v1/biere/delete/{id}',
+        handler: beerControleur.deleteById
+    },
 ];
 module.exports = routes;
