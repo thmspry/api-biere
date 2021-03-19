@@ -33,5 +33,17 @@ module.exports = {
             return h.response({error:"not found"}).code(404)
         }
         return h.response(result).code(200)
+    },
+    findByBrewId: async (request,h) => {
+        const breweryId = request.params.breweryId;
+        const result = await Models.Beer.findAll({
+            where : {
+                breweryId: breweryId
+            }
+        })
+        if (result.length === 0) {
+            return h.response({error:"not found"}).code(404)
+        }
+        return h.response(result).code(200)
     }
 }
