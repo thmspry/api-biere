@@ -10,6 +10,7 @@ const schemaBrewery = Joi.object({
 const schemaBreweries =  Joi.array().items(schemaBrewery);
 
 const brewerieControleur = require("../controleur/brewerie_controleur");
+const beerControleur = require("../controleur/beer_controleur")
 const routes = [
     {
         method: 'GET',
@@ -30,11 +31,8 @@ const routes = [
 
                 }
             },
-
             tags: ['api'],
             handler:  brewerieControleur.getAll
-
-
         },
 
     },
@@ -42,6 +40,35 @@ const routes = [
         method: 'GET',
         path: '/api/v1/brasserie/populate',
         handler: brewerieControleur.populateBreweries
+    },
+    {
+        method: 'GET',
+        path: '/api/v1/biere',
+        options: {
+            description: 'Obtenir la liste des bières',
+            notes: 'Renvoie un tableau de bières ',
+            plugins: {
+                'hapi-swagger': {
+                    responses: {
+                        '200': {
+                            'description': 'Bonne requête',
+                            schema : schemaBreweries.default([{id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'},
+                                {id: 177, nameBreweries: 'Brasserie De Saint Sylvestre', city: 'St-Sylvestre-Cappel'}])
+
+                        }
+                    },
+
+                }
+            },
+            tags: ['api'],
+            handler:  beerControleur.getAll
+        },
+
+    },
+    {
+        method: 'GET',
+        path: '/api/v1/biere/populate',
+        handler: beerControleur.populateBeers
     }
 ];
 module.exports = routes;
