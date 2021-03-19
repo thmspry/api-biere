@@ -43,6 +43,15 @@ module.exports = {
     },
     findByState: async (request,h) => {
         const state = request.params.state;
+        /*Models.Beer.findAll({
+            where:{
+                state:state
+            }
+        }).then(result => {
+            return h.response(result).code(200)
+        }).catch(error => {
+            return h.response({error:"not found"}).code(404)
+        })*/
         const result = await Models.Beer.findAll({
             where : {
                 state: state
@@ -64,5 +73,22 @@ module.exports = {
             return h.response({error:"not found"}).code(404)
         }
         return h.response(result).code(200)
+    },
+    deleteById: async (request,h) => {
+        const id = request.params.id;
+        Models.Beer.findAll({
+            where:{
+                id:id
+            }
+        }).then((result) => {
+            return Models.Beer.destroy({
+                where:{
+                    id:id
+                }
+            })
+        }).then(result => {return h.response(result).code(200)})
+        .catch(error => {
+            return h.response({error:"destroy failed"}).code(404)
+        })
     }
 }

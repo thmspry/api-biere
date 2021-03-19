@@ -8,3 +8,4 @@ module.exports.myKey=myKey;
 module.exports.dbPath = dbPath;
 module.exports.brewerieFileName = brewerieFileName;
 module.exports.beerFileName = beerFileName;
+module.exports.beerFileName = beerFileName;
