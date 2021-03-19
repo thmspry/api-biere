@@ -15,12 +15,12 @@ module.exports = {
                 .on('data',
                     async row =>
                         await Beer.create({
-                            id: row.id,
-                            name: row.name,
-                            state: row.Country,
-                            breweryId: row.brewery_id,
+                            id: parseInt(row.id),
+                            name: String(row.name),
+                            state: String(row.Country),
+                            breweryId: parseInt(row.brewery_id),
 
-                        }).catch(e => {console.log('unable to insert : '+e)}))
+                        }).catch(e => {/*console.log('unable to insert : '+e)*/}))
                 .on('end', rowCount => resolve({message : 'parsed done'}));
         });
         return h.response(await promise).code(200);

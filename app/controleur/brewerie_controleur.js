@@ -19,7 +19,7 @@ module.exports = {
                             nameBreweries: row.breweries,
                             city: row.city
 
-                        }).catch(e => {console.log('unable to insert : '+e)}))
+                        }).catch(e => {/*console.log('unable to insert : '+e)*/}))
                 .on('end', rowCount => resolve({message : 'parsed done'}));
         });
         return h.response(await promise).code(200);
