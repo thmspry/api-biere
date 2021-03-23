@@ -71,6 +71,7 @@ module.exports.start = async () => {
 
     await config();
 
+    /*
     const injectOptions = {
         method: 'GET',
         url: '/api/v1/brasserie/populate',
@@ -83,7 +84,7 @@ module.exports.start = async () => {
     }
     await server.inject(injectOptionsBeers);
     console.log('-- Populate done --');
-
+    */
     await server.start();
 
     console.log(`Server running at: ${server.info.uri}`);

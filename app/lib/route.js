@@ -70,23 +70,28 @@ const routes = [
     },
     {
         method: 'GET',
-        path: '/api/v1/biere/byId/{id}',
+        path: '/api/v1/biere/id/{id}',
         handler: beerControleur.findById
     },
     {
         method: 'GET',
-        path: '/api/v1/biere/byState/{state}',
+        path: '/api/v1/biere/state/{state}',
         handler : beerControleur.findByState
     },
     {
         method: 'GET',
-        path: '/api/v1/biere/byBrewId/{breweryId}',
+        path: '/api/v1/biere/breweryId/{breweryId}',
         handler: beerControleur.findByBrewId
     },
     {
         method: 'GET',
         path: '/api/v1/biere/delete/{id}',
         handler: beerControleur.deleteById
+    },
+    {
+        method: 'POST',
+        path: '/api/v1/biere',
+        handler: beerControleur.add
     },
     {
         method: 'GET',
