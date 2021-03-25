@@ -33,71 +33,59 @@ module.exports = {
     //testé
     findById: async (request,h) => {
         const id = request.params.id
-        const result = await Models.Beer.findAll({
+        return await Models.Beer.findOne({
             where : {
                 id: id
             }
+        }).then((result) => {
+            if (result === null) {
+                return h.response({error : "not found"}).code(404);
+            }
+            return h.response(result).code(200);
         })
-        if (result.length === 0) {
+        /*if (result.length === 0) {
             return h.response({error : "not found"}).code(404);
         }
       return h.response(result).code(200);
-    },
+    */},
     //testé
     findByState: async (request,h) => {
         const state = request.params.state;
-        /*Models.Beer.findAll({
-            where:{
-                state:state
-            }
-        }).then(result => {
-            return h.response(result).code(200)
-        }).catch(error => {
-            return h.response({error:"not found"}).code(404)
-        })*/
-        const result = await Models.Beer.findAll({
+        return await Models.Beer.findAll({
             where : {
                 state: state
             }
+        }).then((result) => {
+            if (result.length === 0) {
+                return h.response({error:"not found"}).code(404)
+            } else {
+                return h.response(result).code(200)
+            }
         })
-        if (result.length === 0) {
-            return h.response({error:"not found"}).code(404)
-        }
-        console.log(result)
-        return h.response(result).code(200)
     },
     //testé
     findByBrewId: async (request,h) => {
         const breweryId = request.params.breweryId;
-        const result = await Models.Beer.findAll({
-            where : {
-                breweryId: breweryId
-            }
-        })
-        if (result.length === 0) {
-            return h.response({error:"not found"}).code(404)
-        }
-        return h.response(result).code(200)
+        return await Models.Beer.findAll({
+            where : {breweryId: breweryId}})
+            .then((result) => {
+                if (result.length === 0) {
+                    return h.response({error:"not found"}).code(404)
+                }
+                return h.response(result).code(200)
+            })
     },
     //testé
     deleteById: async (request,h) => {
         const id = request.params.id;
-        const result = await Models.Beer.findAll({
-            where:{
-                id:id
-            }
-        }).then((result) => {
-            return Models.Beer.destroy({
-                where:{id:id}
-            }).then(() => {
-                return result
-                })
+        return await Beer.destroy({where :{id:id}})
+            .then((result) => {
+                if (result === null) {
+                    return h.response({error:"pas de biere trouvé avec cet id"}).code(404)
+                } else {
+                    return h.response(result).code(202)
+                }
         })
-
-        if (result.length === 0) {
-            return h.response({error:"not found"}).code(404);
-        } else {
-            return h.response(result).code(200)}
     },
     //testé
     add: async (request,h) => {
@@ -107,38 +95,67 @@ module.exports = {
                 name:request.payload.name,
                 state:request.payload.state,
                 breweryId:parseInt(request.payload.breweryId)
-            };
+            }
             console.log(payload)
 
             if (Object.values(payload).includes(undefined) || isNaN(payload.id) || isNaN(payload.breweryId)) {
                 return h.response({error:"request error"}).code(404)
             }
-            const brewery = await Models.Brewery.findAll({
-                where: {
-                    id : payload.breweryId
-                }
+            const brewery = await Models.Brewery.findOne({
+                where: {id : payload.breweryId}
             }).then(result => {return result})
 
-            if (brewery.length === 0) {
+            if (brewery === null) {
                 return h.response({error:"brewery id ne correspond a aucun brewery"}).code(203)
             }
-            console.log("apres 124")
-            const beerExist = await Beer.findAll({
-                where: {
-                    id : payload.id
-                }
-            }).then(result => {return result})
 
-            if (beerExist.length === 0) {
-                await Beer.create(payload);
-                return h.response(payload).code(201)
-            } else {
-                return h.response({error:"Il existe déjà une biere avec cet ID"}).code(404)
-            }
-
+            return await Beer.findOne({where:{id:payload.id}})
+                .then((result) => {
+                    if (result !== null) {
+                        return h.response({error:"Il existe déjà une biere avec cet ID"}).code(404)
+                    } else {
+                        Beer.create(payload)
+                        return h.response(payload).code(201)
+                    }
+            })
         } catch (e) {
             console.log("catch")
-            return h.response({error:"request error","":e}).code(203)
+            return h.response({error:"request error"}).code(203)
+        }
+    },
+    update: async (request,h) => {
+        try {
+            const payload = {
+                id: parseInt (request.payload.id),
+                name:request.payload.name,
+                state:request.payload.state,
+                breweryId:parseInt(request.payload.breweryId)
+            };
+            Object.keys(payload).forEach(key => {
+                if (payload[key] === undefined || (isNaN(payload[key] && (key === "breweryId" || key === "id")))){
+                    delete payload[key]
+                }
+            })
+            if (payload.breweryId !== undefined) {
+                const brewery = await Models.Brewery.findOne({
+                    where: {id : payload.breweryId}
+                }).then((result) => {return result})
+                if (brewery === null){return h.response({error:"brewery n'existe pas"}).code(404)}
+            }
+
+            return await Beer.findOne({
+                where:{id:payload.id}})
+                .then((result) => {
+                    if(result !== null){
+                        result.set(payload);
+                        result.save();
+                        return h.response(result).code(202)
+                    }
+                    return h.response({error:"save didn't work"}).code(404)
+                })
+        } catch (e) {
+            console.log("catch")
+            return h.response({error:"request error : "+e}).code(203)
         }
     }
 }

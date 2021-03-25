@@ -204,6 +204,11 @@ const routes = [
         handler: beerControleur.add
     },
     {
+        method: 'PATCH',
+        path: '/api/v1/biere',
+        handler: beerControleur.update
+    },
+    {
         method: 'GET',
         path: '/api/v1/biere',
         options: {
