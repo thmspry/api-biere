@@ -30,19 +30,120 @@ module.exports = {
         return h.response(result).code(200);
     },
     add: async (request,h) => {
-        let body = request.payload;
-        /*let exist = Models.Brewery.findAll({
-            where: {
-                id: body.id
-            }
-        });
-        console.log(exist);*/
-        //if (exist === {}) {
-        const result = await Models.Brewery.create({ id: body.id, nameBreweries: body.nameBreweries, city: body.city });
-        return h.response(result).code(200);
-        //} else {
-            //return h.response({error: "Brewery id already exist : ", exist}).code(203);
-        //}
+        try {
+            const payload = {
+                id: parseInt (request.payload.id),
+                nameBreweries:request.payload.nameBreweries,
+                city:request.payload.city,
+            };
 
-    }
+            if (Object.values(payload).includes(undefined)) {
+                return h.response({error:"request error : undefinded value"}).code(404)
+            }
+            if (isNaN(payload.id)) {
+                return h.response({error:"request error : id is Not a Number"}).code(404)
+            }
+            const brasserieExist = await Brewery.findAll({
+                where: {
+                    id : payload.id
+                }
+            }).then(result => {return result})
+
+            if (brasserieExist.length === 0) {
+                await Brewery.create(payload);
+                return h.response(payload).code(201)
+            } else {
+                return h.response({error:"Il existe déjà une brasserie avec cet ID"}).code(404)
+            }
+
+        } catch (e) {
+            console.log("catch")
+            return h.response({error:"request error","":e}).code(203)
+        }
+    },
+
+    findById : async (request,h) => { // Testé ✅
+        const id = request.params.id
+        const result = await Models.Brewery.findAll({
+            where : {
+                id: id
+            }
+        })
+        if (result.length === 0) {
+            return h.response({error : "not found"}).code(404);
+        }
+        return h.response(result).code(200);
+    },
+
+    findByCity : async (request,h) => { // Testé ✅
+        const city = request.params.city
+        const result = await Models.Brewery.findAll({
+            where : {
+                city: city
+            }
+        })
+        if (result.length === 0) {
+            return h.response({error : "not found"}).code(404);
+        }
+        return h.response(result).code(200);
+    },
+
+    deleteById: async (request,h) => {
+        const id = request.params.id;
+        const result = await Models.Brewery.findAll({
+            where:{
+                id:id
+            }
+        }).then((result) => {
+            return Models.Brewery.destroy({
+                where:{id:id}
+            }).then(() => {
+                return result
+            })
+        })
+
+        if (result.length === 0) {
+            return h.response({error:"not found"}).code(404);
+        } else {
+            return h.response(result).code(200)}
+    },
+
+
+    editById: async (request,h) => {
+        try {
+            const id = request.params.id;
+            const payload = {
+                id: parseInt (request.payload.id),
+                nameBreweries:request.payload.nameBreweries,
+                city:request.payload.city,
+            };
+
+            if (Object.values(payload).includes(undefined)) {
+                return h.response({error:"request error : undefinded value"}).code(404)
+            }
+            if (isNaN(payload.id)) {
+                return h.response({error:"request error : id is Not a Number"}).code(404)
+            }
+            const brasserieExist = await Brewery.findAll({
+                where: {
+                    id : payload.id
+                }
+            }).then(result => {return result})
+
+            if (brasserieExist.length === 0) {
+                await Brewery.update(payload, {
+                    where: {
+                        id: id
+                    }
+                });
+                return h.response(payload).code(201)
+            } else {
+                return h.response({error:"Il existe déjà une brasserie avec cet ID"}).code(404)
+            }
+
+        } catch (e) {
+            console.log("catch")
+            return h.response({error:"request error","":e}).code(203)
+        }
+    },
 }

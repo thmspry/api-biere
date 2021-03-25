@@ -12,7 +12,10 @@ const schemaBreweries =  Joi.array().items(schemaBrewery);
 const brewerieControleur = require("../controleur/brewerie_controleur");
 const beerControleur = require("../controleur/beer_controleur");
 const routes = [
-    {
+
+    // -------- Routes relatives aux BRASSERIES --------
+
+    { // Récupère toutes les brasseries existantes | Testé ✅
         method: 'GET',
         path: '/api/v1/brasserie',
         options: {
@@ -38,26 +41,79 @@ const routes = [
 
         },
     },
-    {
+    {   // Remplis la base de données de brasseries | Testé ✅
         method: 'GET',
         path: '/api/v1/brasserie/populate',
         handler: brewerieControleur.populateBreweries
     },
 
-    /*
-        Ajout d'une brasserie
-     */
-    {
-        method: 'POST',
-        path: '/api/v1/brasserie',
+
+    { // Recherche une brewery par ID | Testé ✅
+        method: 'GET',
+        path: '/api/v1/brasserie/id/{id}',
         options: {
-            description: 'Ajoute une brasserie',
-            notes: 'La brasserie doit être dans l entête de la requette',
+            description: 'Recherche d une brasserie par ID',
+            notes: 'L ID est donné dans l URL',
             plugins: {
                 'hapi-swagger': {
                     responses: {
                         '200': {
                             'description': 'Bonne requête'
+                        },
+                        '404': {
+                            'description': 'Pas de brasserie'
+                        }
+                    },
+
+                }
+            },
+            tags: ['api', 'get', 'recherche', 'id'],
+            handler: brewerieControleur.findById
+        },
+
+    },
+
+
+    {  // Rechercher un/des brewery(s) par city  | Testé ✅
+        method: 'GET',
+        path: '/api/v1/brasserie/city/{city}',
+        options: {
+            description: 'Recherche d une brasserie par ville',
+            notes: 'La ville est donné dans l URL',
+            plugins: {
+                'hapi-swagger': {
+                    responses: {
+                        '200': {
+                            'description': 'Bonne requête'
+                        },
+                        '404': {
+                            'description': 'Pas de brasserie'
+                        }
+                    },
+
+                }
+            },
+            tags: ['api', 'get', 'recherche', 'city'],
+            handler: brewerieControleur.findByCity
+        },
+
+    },
+
+
+    { // Ajout d'une brasserie | Testé ✅
+        method: 'POST',
+        path: '/api/v1/brasserie',
+        options: {
+            description: 'Ajoute une brasserie',
+            notes: 'L objet Brasserie doit être dans l entête de la requête',
+            plugins: {
+                'hapi-swagger': {
+                    responses: {
+                        '200': {
+                            'description': 'Bonne requête'
+                        },
+                        '404': {
+                            'description': 'Erreur'
                         }
                     },
 
@@ -68,6 +124,60 @@ const routes = [
         },
 
     },
+
+    {  // Supprime un brasserie par ID | Testé ✅
+        method: 'GET',
+        path: '/api/v1/brasserie/delete/{id}',
+        options: {
+            description: 'Supprime une brasserie suivant sont ID',
+            notes: 'L ID est donné dans l URL, renvoie la brasserie supprimée si pas de problème',
+            plugins: {
+                'hapi-swagger': {
+                    responses: {
+                        '200': {
+                            'description': 'Bonne requête'
+                        },
+                        '404': {
+                            'description': 'Pas de brasserie correspondante'
+                        }
+                    },
+
+                }
+            },
+            tags: ['api', 'get', 'delete', 'id'],
+            handler: brewerieControleur.deleteById
+        },
+
+    },
+
+    {  // Modifie une brasserie
+        method: 'POST',
+        path: '/api/v1/brasserie/edit/{id}',
+        options: {
+            description: 'Modifie une brasserie',
+            notes: 'Modifie une brasserie suivant sont ID',
+            plugins: {
+                'hapi-swagger': {
+                    responses: {
+                        '200': {
+                            'description': 'Bonne requête'
+                        },
+                        '404': {
+                            'description': 'Pas de brasserie correspondante'
+                        }
+                    },
+
+                }
+            },
+            tags: ['api', 'get', 'edit', 'id'],
+            handler: brewerieControleur.editById
+        },
+
+    },
+
+
+    // -------- Routes relatives aux BIERES --------
+
     {
         method: 'GET',
         path: '/api/v1/biere/id/{id}',
