@@ -398,5 +398,6 @@ const routes = [
             handler: authControleur.register
         },
     },
+
 ];
 module.exports = routes;

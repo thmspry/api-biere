@@ -12,11 +12,27 @@ const jwt = require('jsonwebtoken');
 const Models = require("../model/");
 const authControleur = require("../controleur/authentification_controleur");
 
+// Graphql
+const {ApolloServer} = require('apollo-server-hapi');
+const typeDefs = require('../graphql/typeDefs')
+const resolvers = require('../graphql/resolvers')
+
+const servApollo = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection:true,
+    playground:true,
+    context : ({req}) => {
+        const token = req.headers.authorization
+    }
+});
+
 
 const server = Hapi.server({
     port: 3000,
     host: 'localhost'
 });
+
 const swaggerOptions = {
     info: {
         title: 'Breweries API Documentation',
@@ -34,14 +50,17 @@ const validate = async function (decoded, request, h) {
 };
 
 const config = async () => {
-    await server.register([{
-        plugin: AuthJwt
-    },Inert,
+    await server.register([
+        {
+            plugin: AuthJwt
+        },
+        Inert,
         Vision,
         {
             plugin: HapiSwagger,
             options: swaggerOptions
-        }])
+        }
+        ])
 
     server.auth.strategy('jwt', 'jwt',
         {
@@ -90,11 +109,19 @@ module.exports.start = async () => {
     }
     await server.inject(injectOptionsBeers);
     console.log('-- Populate done --');
+    try {
+        await servApollo.applyMiddleware({
+            app:server
+        })
+        await servApollo.installSubscriptionHandlers(server.listener)
+        await server.start();
+        console.log(`Server running at: ${server.info.uri}`);
+        return server;
+    } catch (e){
+        console.log(`Error while starting server : ${e.message}`)
+        return null
+    }
 
-    await server.start();
-
-    console.log(`Server running at: ${server.info.uri}`);
-    return server;
 };
 
 
