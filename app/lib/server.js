@@ -22,9 +22,6 @@ const servApollo = new ApolloServer({
     resolvers,
     introspection:true,
     playground:true,
-    context : ({req}) => {
-        const token = req.headers.authorization
-    }
 });
 
 
@@ -43,9 +40,9 @@ const swaggerOptions = {
 
 const validate = async function (decoded, request, h) {
     if (await authControleur.validAuth(decoded.id)) {
-        return {isValid: false};
-    } else {
         return {isValid: true};
+    } else {
+        return {isValid: false};
     }
 };
 
@@ -97,6 +94,7 @@ module.exports.start = async () => {
     }
     await server.inject(injectOptionsUsers);
 
+
     const injectOptions = {
         method: 'GET',
         url: '/api/v1/brasserie/populate',
@@ -109,10 +107,10 @@ module.exports.start = async () => {
     }
     await server.inject(injectOptionsBeers);
     console.log('-- Populate done --');
+
     try {
-        await servApollo.applyMiddleware({
-            app:server
-        })
+
+        await servApollo.applyMiddleware({app:server})
         await servApollo.installSubscriptionHandlers(server.listener)
         await server.start();
         console.log(`Server running at: ${server.info.uri}`);
