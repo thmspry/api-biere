@@ -14,14 +14,29 @@ module.exports = {
                 .pipe(csv.parse({ headers: true, delimiter : ';' }))
                 .on('error', error => console.error(error))
                 .on('data',
-                    async row =>
-                        await Brewery.create({
-                            id: row.id,
-                            nameBreweries: row.breweries,
-                            city: row.city
-
-                        }).catch(e => {/*console.log('unable to insert : '+e)*/}))
-                .on('end', rowCount => resolve({message : 'parsed done'}));
+                    async row => {
+                        const id = parseInt(row.id);
+                        const nameBreweries = String(row.breweries);
+                        const city = String(row.city);
+                        if(!isNaN(id)) {
+                            await Brewery.findAll({
+                                where: {
+                                    id: id
+                                }
+                            }).then((result) => {
+                                if (result.length === 0) {
+                                     Brewery.create({
+                                        id: id,
+                                        nameBreweries: nameBreweries,
+                                        city: city
+                                    }).catch(e => {
+                                         console.log('unable to insert : '+e)
+                                     })
+                                }
+                            })
+                        }
+                    })
+                .on('end', rowCount => resolve({message : 'parsed done : ' + rowCount + ' rows parsed'}));
         });
         return h.response(await promise).code(200);
     },

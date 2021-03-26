@@ -10,6 +10,7 @@ const AuthJwt = require('hapi-auth-jwt2');
 const jwt = require('jsonwebtoken');
 
 const Models = require("../model/");
+const beerControleur = require("../controleur/beer_controleur");
 
 
 const server = Hapi.server({
@@ -54,6 +55,7 @@ const config = async () => {
             key: require('../config/config').myKey,
             validate  // validate function defined above
         });
+
     server.log('info', 'Auth strategy created: github')
     server.log('info', 'Plugin registered: authentication with strategy github')
 

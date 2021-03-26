@@ -11,6 +11,7 @@ const schemaBreweries =  Joi.array().items(schemaBrewery);
 
 const brewerieControleur = require("../controleur/brewerie_controleur");
 const beerControleur = require("../controleur/beer_controleur");
+const authControleur = require("../controleur/authentification_controleur");
 const routes = [
 
     // -------- Routes relatives aux BRASSERIES --------
@@ -235,7 +236,16 @@ const routes = [
     {
         method: 'GET',
         path: '/api/v1/biere/populate',
+        config: { auth: 'jwt' },
         handler: beerControleur.populateBeers
-    }
+    },
+
+    // ------- Routes relative à l'authentification
+
+    {
+        method: 'GET',
+        path: '/api/v1/generate/{id}/{name}',
+        handler: authControleur.register
+    },
 ];
 module.exports = routes;

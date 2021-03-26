@@ -5,6 +5,7 @@ const csv = require('fast-csv');
 const Models = require("../model/");
 const beerFileName = require('../config/config').beerFileName;
 const Beer = require('../model').Beer;
+const Brewery = require('../model').Brewery;
 
 module.exports = {
     populateBeers:  async (request,h) => {
@@ -13,15 +14,39 @@ module.exports = {
                 .pipe(csv.parse({ headers: true, delimiter : ';' }))
                 .on('error', error => console.error(error))
                 .on('data',
-                    async row =>
-                        await Beer.create({
-                            id: parseInt(row.id),
-                            name: String(row.name),
-                            state: String(row.Country),
-                            breweryId: parseInt(row.brewery_id),
-
-                        }).catch(e => {/*console.log('unable to insert : '+e)*/}))
-                .on('end', rowCount => resolve({message : 'parsed done'}));
+                    async row => {
+                            const id = parseInt(row.id);
+                            const name = String(row.name);
+                            const country = String(row.Country);
+                            const brewery_id = parseInt(row.brewery_id);
+                            if(!isNaN(id) && !isNaN(brewery_id)) {
+                                await Beer.findAll({
+                                    where: {
+                                        id: id
+                                    }
+                                }).then((result) => {
+                                    if (result.length === 0) {
+                                        Brewery.findAll({
+                                            where: {
+                                                id : brewery_id
+                                            }
+                                        }).then((result) => {
+                                            if (result.length !== 0) {
+                                                Beer.create({
+                                                    id: id,
+                                                    name: name,
+                                                    state: country,
+                                                    breweryId: brewery_id,
+                                                }).catch(e => {
+                                                    console.log('unable to insert : '+e)
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                .on('end', rowCount => resolve({message : 'parsed done : ' + rowCount + ' rows parsed'}));
         });
         return h.response(await promise).code(200);
     },
