@@ -38,7 +38,12 @@ module.exports = {
                     }
                 })
         })
-        return h.response(await promise).code(200);
+        const message = await promise;
+        if(message.error !== undefined && message.error === 'user ID already exists') {
+            return h.response(message).code(400);
+        } else {
+            return h.response(message).code(200);
+        }
     },
     validAuth: async function (id) {
         await User.findAll({
@@ -48,5 +53,8 @@ module.exports = {
         }).then((result) => {
             return result.length === 0;
         })
+    },
+    clearAll: async function() {
+        await User.truncate();
     }
 }

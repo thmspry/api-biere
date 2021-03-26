@@ -52,15 +52,23 @@ const config = async () => {
 
     server.auth.default('jwt');
 
-    server.route(require('./route'));
-
-
     server.log('info', 'Auth strategy created: github')
     server.log('info', 'Plugin registered: authentication with strategy github')
 
 
 };
+
+server.route(require('./route'));
+
+
 module.exports.init = async () => {
+
+    await authControleur.clearAll();
+    const injectOptions = {
+        method: 'GET',
+        url: '/api/v1/generate/1/admin',
+    }
+    await server.inject(injectOptions);
 
     await server.initialize();
     return server;
@@ -71,6 +79,7 @@ module.exports.start = async () => {
     await Models.sequelize.sync({ force: false });
 
     await config();
+
 
     /*
     const injectOptions = {
