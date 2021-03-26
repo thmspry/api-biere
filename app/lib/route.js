@@ -28,6 +28,11 @@ const routes = [
                     responses: {
                         '200': {
                             'description': 'Bonne requête',
+                            schema : schemaBreweries.default([{id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'},
+                                {id: 177, nameBreweries: 'Brasserie De Saint Sylvestre', city: 'St-Sylvestre-Cappel'}])
+                        },
+                        '404': {
+                            'description': 'tableau vide aucune brasserie',
                         }
                     },
 
@@ -48,11 +53,13 @@ const routes = [
                         '200': {
                             'description': 'Base de données remplie',
                         },
+                        '401': {
+                            'description': 'Erreurs authentification',
+                        },
                     },
 
                 }
             },
-
             tags: ['api','get','populate','brasseries','brewerie'],
             handler: brewerieControleur.populateBreweries
         }
@@ -125,7 +132,13 @@ const routes = [
                             'description': 'Bonne requête : La brasserie est ajoutée'
                         },
                         '404': {
-                            'description': 'Erreurs diverses'
+                            'description': 'Erreur format du payload'
+                        },
+                        '403': {
+                            'description': 'Id dejà existant'
+                        },
+                        '401': {
+                            'description': 'Erreurs authentification'
                         },
                     },
 
@@ -174,7 +187,7 @@ const routes = [
                             'description': 'Bonne requête : La brasserie est modifiée'
                         },
                         '404': {
-                            'description': 'Erreurs diverses'
+                            'description': 'Erreurs format JSon du payload ou ID déjà pris si sa valeur est changé ou bien id d une brasserie non existant'
                         }
                     },
 
@@ -274,8 +287,8 @@ const routes = [
                         '200': {
                             'description': 'Bonne requête : la biere est supprimée + objet Biere '
                         },
-                        '403': {
-                            'description': 'Erreur : JWT non valide'
+                        '401': {
+                            'description': 'Erreurs authentification'
                         },
                         '404': {
                             'description': 'Not found : Pas de biere avec de id'
@@ -317,11 +330,14 @@ const routes = [
             plugins: {
                 'hapi-swagger': {
                     responses: {
-                        '200': {
-                            'description': 'Bonne requête : la biere est ajoutée + objet Biere '
+                        '202': {
+                            'description': 'Bonne requête : la biere est modifiée + objet Biere '
                         },
-                        '403': {
+                        '400': {
                             'description': 'Erreurs diverses'
+                        },
+                        '401': {
+                            'description': 'Erreurs authentification'
                         },
                         '404': {
                             'description': 'Not found : pas de bière trouvée'
@@ -345,7 +361,7 @@ const routes = [
                     responses: {
                         '200': {
                             'description': 'Bonne requête',
-                        }
+                        },
                     },
 
                 }
@@ -365,6 +381,9 @@ const routes = [
                         '200': {
                             'description': 'Base de données remplie',
                         },
+                        '401': {
+                            'description': 'Erreurs authentification',
+                        }
                     },
 
                 }

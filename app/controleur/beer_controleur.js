@@ -50,12 +50,16 @@ module.exports = {
         });
         return h.response(await promise).code(200);
     },
-    //testé
+
     getAll: async (request,h) => {
         const result = await Models.Beer.findAll();
-        return h.response(result).code(200);
+        if (result.length === 0) {
+            return h.response(result).code(404);
+        } else {
+            return h.response(result).code(200);
+        }
     },
-    //testé
+
     findById: async (request,h) => {
         const id = request.params.id
         return await Models.Beer.findOne({
@@ -69,7 +73,7 @@ module.exports = {
             return h.response(result).code(200);
         })
     },
-    //testé
+
     findByState: async (request,h) => {
         const state = request.params.state;
         return await Models.Beer.findAll({
@@ -84,7 +88,7 @@ module.exports = {
             }
         })
     },
-    //testé
+
     findByBrewId: async (request,h) => {
         const breweryId = request.params.breweryId;
         return await Models.Beer.findAll({
@@ -96,7 +100,7 @@ module.exports = {
                 return h.response(result).code(200)
             })
     },
-    //testé
+
     deleteById: async (request,h) => {
         const id = request.params.id;
         return await Beer.destroy({where :{id:id}})
@@ -108,7 +112,7 @@ module.exports = {
                 }
         })
     },
-    //testé
+
     add: async (request,h) => {
         try {
             const payload = {
@@ -117,7 +121,6 @@ module.exports = {
                 state:request.payload.state,
                 breweryId:parseInt(request.payload.breweryId)
             }
-            console.log(payload)
 
             if (Object.values(payload).includes(undefined) || isNaN(payload.id) || isNaN(payload.breweryId)) {
                 return h.response({error:"JSON invalide"}).code(400)

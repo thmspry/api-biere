@@ -50,6 +50,16 @@ describe('POST /', () => {
         expect(res.statusCode).to.equal(404)
         expect(res.result).to.equal({error:"request error : id is Not a Number"})
     })
+    it('ajout Brasserie ko json invalide 2', async () => {
+        const res = await server
+            .inject({
+                method: 'post',
+                url: '/api/v1/brasserie',
+                payload: ''
+            });
+        expect(res.statusCode).to.equal(404)
+        expect(res.result).to.equal({error: "request error : undefinded payload"})
+    })
 
     // ---------------- BIERE ----------------
 
