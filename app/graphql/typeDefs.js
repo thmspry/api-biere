@@ -14,11 +14,14 @@ const typeDefs = gql`
         city: String!
     }
     
+    # Query
     type Query {
-        Beer(id:Int!): Biere
-        Beers: [Biere]
-        BeersbyBrewery(brasserie:Int!): [Biere]
-        Brasserie(id:Int!): Brasserie
+        Beer(id:Int, brasserie:Int): Biere!
+        Beers(limit:Int, random:Boolean): [Biere!]! #liste des bières avec limite de taille et aléatoire ou non
+        BeersbyBrewery(brasserie:Int!): [Biere!]!
+        Brasserie(id:Int!): Brasserie!
+        Brewerys(limit:Int, random:Boolean): [Brasserie!]! #liste des bières avec limite de taille et aléatoire ou non
+
     }
 `;
 

@@ -4,7 +4,7 @@ const dbPath = require("../config/config").dbPath;
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: require('../config/config').dbPath,
-    logging: console.log,
+    logging: false,
 
 });
 
