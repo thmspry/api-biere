@@ -128,6 +128,7 @@ const routes = [
                             'description': 'Erreurs diverses'
                         },
                     },
+
                 }
             },
             tags: ['api', 'post', 'add','brasseries','brewerie'],
@@ -160,10 +161,9 @@ const routes = [
         },
 
     },
-
-    {  // Modifie une brasserie
+    {  // Modifie une brasserie (tous les attributs de la brasserie
         method: 'PUT',
-        path: '/api/v1/brasserie/edit/{id}',
+        path: '/api/v1/brasserie/{id}',
         options: {
             description: 'Modifie une brasserie',
             notes: 'Modifie une brasserie suivant sont ID',
@@ -238,7 +238,6 @@ const routes = [
             handler: beerControleur.findByState
         }
     },
-
     {
         method: 'GET',
         path: '/api/v1/biere/breweryId/{breweryId}',
@@ -312,7 +311,7 @@ const routes = [
     },
     {
         method: 'PATCH',
-        path: '/api/v1/biere',
+        path: '/api/v1/biere/{id}',
         options: {
             description: 'Modifie une biere',
             plugins: {
@@ -338,6 +337,7 @@ const routes = [
         method: 'GET',
         path: '/api/v1/biere',
         options: {
+            auth: false,
             description: 'Obtenir la liste des bières',
             notes: 'Renvoie un tableau de bières ',
             plugins: {

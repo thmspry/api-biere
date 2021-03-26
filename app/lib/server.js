@@ -25,7 +25,6 @@ const swaggerOptions = {
     debug: true
 };
 
-
 const validate = async function (decoded, request, h) {
     if (await authControleur.validAuth(decoded.id)) {
         return {isValid: false};
@@ -52,14 +51,12 @@ const config = async () => {
 
     server.auth.default('jwt');
 
-    server.route(require('./route'));
-
-
     server.log('info', 'Auth strategy created: github')
     server.log('info', 'Plugin registered: authentication with strategy github')
 
-
 };
+server.route(require('./route'));
+
 module.exports.init = async () => {
 
     await server.initialize();
