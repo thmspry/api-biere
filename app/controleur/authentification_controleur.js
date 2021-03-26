@@ -46,12 +46,12 @@ module.exports = {
         }
     },
     validAuth: async function (id) {
-        await User.findAll({
+        return await User.findAll({
             where : {
                 id: id
             }
         }).then((result) => {
-            return result.length === 0;
+            return result.length !== 0;
         })
     },
     clearAll: async function() {
