@@ -104,7 +104,7 @@ module.exports = {
                 if (result === 0) {
                     return h.response({error:"pas de biere trouvé avec cet id"}).code(404)
                 } else {
-                    return h.response({message:"Biere d'id n°"+ id + " suppriméee"}).code(200)
+                    return h.response({message:"Biere d'id n°"+ id + " supprimée"}).code(200)
                 }
         })
     },

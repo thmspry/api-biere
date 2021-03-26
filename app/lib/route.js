@@ -139,7 +139,7 @@ const routes = [
 
     {  // Supprime un brasserie par ID | Testé ✅
         method: 'DELETE',
-        path: '/api/v1/brasserie/{id}',
+        path: '/api/v1/brasserie/delete/{id}',
         options: {
             description: 'Supprime une brasserie suivant sont ID',
             notes: 'L ID est donné dans l URL, renvoie la brasserie supprimée si pas de problème',

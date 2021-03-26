@@ -104,15 +104,16 @@ module.exports = {
     },
     deleteById: async (request,h) => {
         const id = request.params.id;
+        console.log(id);
         return await Brewery.destroy({where :{id:id}})
             .then((result) => {
-                if (result === null) {
+                if (result === 0) {
                     return h.response({error:"pas de brasserie trouvé avec cet id"}).code(404)
+                } else {
+                    return h.response({message:"Brasserie d'id n°"+ id + " supprimée"}).code(200)
                 }
-                return h.response(result).code(200)
             })
     },
-
 
     editById: async (request,h) => {
         try {
@@ -139,7 +140,7 @@ module.exports = {
                     where: {id: payload.id}
                 })
 
-                if (brasserieExist === null) {
+                if (brasserieExist === null || parseInt(id) === payload.id) {
                     await Brewery.update(payload, {
                         where: {id: id}
                     });
