@@ -231,7 +231,7 @@ describe('GET ', () => {
                 method: 'get',
                 url: '/api/v1/brasserie/id/99999444844484842',
             });
-        expect(res.statusCode).to.equal(404)
+        expect(res.statusCode).to.equal(400)
         expect(res.result).to.equal({"error":"not found"})
     })
 

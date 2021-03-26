@@ -14,7 +14,6 @@ db.Beer = require('./beer')(sequelize,DataTypes);
 db.User = require('./user')(sequelize,DataTypes);
 
 db.Brewery.hasMany(db.Beer ,{ as: "bieres", onDelete: 'cascade', onUpdate:'cascade' })
-//onDelete ne fonctionne pas
 db.Beer.belongsTo(db.Brewery,{
     foreignKey: "breweryId",
     as: "brasserie",

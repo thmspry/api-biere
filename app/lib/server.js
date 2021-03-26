@@ -24,7 +24,6 @@ const servApollo = new ApolloServer({
     playground:true,
 });
 
-
 const server = Hapi.server( {
     port: 3000,
     host: 'localhost'
@@ -109,10 +108,11 @@ module.exports.start = async () => {
     console.log('-- Populate done --');
 
     try {
-
+        await server.start();
+        // le serveur apollo (pour graphQl) va se connecter au framework HTTP d'hapi afin de listen sur le même port
         await servApollo.applyMiddleware({app:server})
         await servApollo.installSubscriptionHandlers(server.listener)
-        await server.start();
+
         console.log(`Server running at: ${server.info.uri}`);
         return server;
     } catch (e){

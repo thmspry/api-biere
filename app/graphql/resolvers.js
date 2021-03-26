@@ -5,7 +5,10 @@ const beerControleur = require("../controleur/beer_controleur");
 const authControleur = require("../controleur/authentification_controleur");
 const {Sequelize} = require("sequelize");
 
-
+/**
+ * Queries qui vont récupérer les données dans la base de donnée et qui sont relié au type Query du gql
+ * @type {{Query: {Brewerys(*, *): *, Beers(*, *): *, Brasserie(*, *): *, BeersbyBrewery(*, *): *, Beer(*, *): *}}}
+ */
 const resolvers = {
     Query:{
         Beer(parent, args) {
