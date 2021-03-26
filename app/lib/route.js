@@ -20,6 +20,7 @@ const routes = [
         method: 'GET',
         path: '/api/v1/brasserie',
         options: {
+            auth: false,
             description: 'Obtenir la liste des brasseries',
             notes: 'Renvoie un tableau de brasseries ',
             plugins: {
@@ -35,11 +36,8 @@ const routes = [
 
                 }
             },
-
             tags: ['api'],
             handler:  brewerieControleur.getAll
-
-
         },
     },
     {   // Remplis la base de données de brasseries | Testé ✅
@@ -48,11 +46,11 @@ const routes = [
         handler: brewerieControleur.populateBreweries
     },
 
-
     { // Recherche une brewery par ID | Testé ✅
         method: 'GET',
         path: '/api/v1/brasserie/id/{id}',
         options: {
+            auth: false,
             description: 'Recherche d une brasserie par ID',
             notes: 'L ID est donné dans l URL',
             plugins: {
@@ -79,6 +77,7 @@ const routes = [
         method: 'GET',
         path: '/api/v1/brasserie/city/{city}',
         options: {
+            auth: false,
             description: 'Recherche d une brasserie par ville',
             notes: 'La ville est donné dans l URL',
             plugins: {
@@ -182,16 +181,19 @@ const routes = [
     {
         method: 'GET',
         path: '/api/v1/biere/id/{id}',
+        config: { auth: false },
         handler: beerControleur.findById
     },
     {
         method: 'GET',
         path: '/api/v1/biere/state/{state}',
+        config: { auth: false },
         handler : beerControleur.findByState
     },
     {
         method: 'GET',
         path: '/api/v1/biere/breweryId/{breweryId}',
+        config: { auth: false },
         handler: beerControleur.findByBrewId
     },
     {
@@ -213,6 +215,7 @@ const routes = [
         method: 'GET',
         path: '/api/v1/biere',
         options: {
+            auth: false,
             description: 'Obtenir la liste des bières',
             notes: 'Renvoie un tableau de bières ',
             plugins: {
@@ -231,12 +234,10 @@ const routes = [
             tags: ['api'],
             handler:  beerControleur.getAll
         },
-
     },
     {
         method: 'GET',
         path: '/api/v1/biere/populate',
-        config: { auth: 'jwt' },
         handler: beerControleur.populateBeers
     },
 
@@ -245,6 +246,7 @@ const routes = [
     {
         method: 'GET',
         path: '/api/v1/generate/{id}/{name}',
+        config: { auth: false },
         handler: authControleur.register
     },
 ];

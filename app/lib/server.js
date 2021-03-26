@@ -10,7 +10,7 @@ const AuthJwt = require('hapi-auth-jwt2');
 const jwt = require('jsonwebtoken');
 
 const Models = require("../model/");
-const beerControleur = require("../controleur/beer_controleur");
+const authControleur = require("../controleur/authentification_controleur");
 
 
 const server = Hapi.server({
@@ -26,14 +26,8 @@ const swaggerOptions = {
 };
 
 
-
-
-server.route(require('./route'));
-
 const validate = async function (decoded, request, h) {
-    console.log(decoded);
-    // do your checks to see if the person is valid
-    if (!users[decoded.id]) {
+    if (await authControleur.validAuth(decoded.id)) {
         return {isValid: false};
     } else {
         return {isValid: true};
@@ -53,8 +47,13 @@ const config = async () => {
     server.auth.strategy('jwt', 'jwt',
         {
             key: require('../config/config').myKey,
-            validate  // validate function defined above
+            validate
         });
+
+    server.auth.default('jwt');
+
+    server.route(require('./route'));
+
 
     server.log('info', 'Auth strategy created: github')
     server.log('info', 'Plugin registered: authentication with strategy github')

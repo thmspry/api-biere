@@ -38,7 +38,7 @@ module.exports = {
                                                     state: country,
                                                     breweryId: brewery_id,
                                                 }).catch(e => {
-                                                    console.log('unable to insert : '+e)
+                                                    console.log('unable to insert : '+e+ ' id = ' + id);
                                                 })
                                             }
                                         })

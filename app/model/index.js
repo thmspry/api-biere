@@ -4,13 +4,14 @@ const dbPath = require("../config/config").dbPath;
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: require('../config/config').dbPath,
-    logging: console.log, //or false,
+    logging: console.log,
 
 });
 
 const db = {};
 db.Brewery = require('./brewery')(sequelize,DataTypes);
 db.Beer = require('./beer')(sequelize,DataTypes);
+db.User = require('./user')(sequelize,DataTypes);
 
 db.Brewery.hasMany(db.Beer ,{ as: "bieres", onDelete: 'cascade', onUpdate:'cascade' })
 //onDelete ne fonctionne pas
