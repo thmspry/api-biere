@@ -42,7 +42,11 @@ module.exports = {
     },
     getAll: async (request,h) => {
         const result = await Models.Brewery.findAll();
-        return h.response(result).code(200);
+        if (result.length === 0) {
+            return h.response(result).code(404);
+        } else {
+            return h.response(result).code(200);
+        }
     },
     add: async (request,h) => {
         try {
