@@ -71,7 +71,7 @@ module.exports = {
                     Brewery.create(payload)
                     return h.response(payload).code(201)
                 } else {
-                    return h.response({error:"Il existe déjà une brasserie avec cet ID"}).code(404)
+                    return h.response({error:"Il existe déjà une brasserie avec cet ID"}).code(403)
                 }
             })
         } catch (e) {
@@ -107,7 +107,7 @@ module.exports = {
         return await Brewery.destroy({where :{id:id}})
             .then((result) => {
                 if (result === null) {
-                    return h.response({error:"pas de biere trouvé avec cet id"}).code(404)
+                    return h.response({error:"pas de brasserie trouvé avec cet id"}).code(404)
                 }
                 return h.response(result).code(200)
             })
@@ -129,17 +129,26 @@ module.exports = {
             if (isNaN(payload.id)) {
                 return h.response({error:"request error : id is Not a Number"}).code(404)
             }
-            const brasserieExist = await Brewery.findOne({
-                where: {id : payload.id}
+
+            const brasserieToEdit = await Brewery.findOne({
+                where: {id : id}
             })
 
-            if (brasserieExist === null) {
-                await Brewery.update(payload, {
-                    where: {id: id}
-                });
-                return h.response(payload).code(200)
+            if (brasserieToEdit !== null) {
+                const brasserieExist = await Brewery.findOne({
+                    where: {id: payload.id}
+                })
+
+                if (brasserieExist === null) {
+                    await Brewery.update(payload, {
+                        where: {id: id}
+                    });
+                    return h.response(payload).code(200)
+                } else {
+                    return h.response({error: "Il existe déjà une brasserie avec cet ID"}).code(404)
+                }
             } else {
-                return h.response({error:"Il existe déjà une brasserie avec cet ID"}).code(404)
+                return h.response({error: "La brasserie a modifier n'existe pas"}).code(404)
             }
 
         } catch (e) {
