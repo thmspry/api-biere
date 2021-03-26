@@ -61,13 +61,6 @@ server.route(require('./route'));
 
 module.exports.init = async () => {
 
-    await authControleur.clearAll();
-    const injectOptions = {
-        method: 'GET',
-        url: '/api/v1/generate/1/admin',
-    }
-    await server.inject(injectOptions);
-
     await server.initialize();
     return server;
 };
@@ -78,8 +71,13 @@ module.exports.start = async () => {
 
     await config();
 
+    await authControleur.clearAll();
+    const injectOptionsUsers = {
+        method: 'GET',
+        url: '/api/v1/generate/1/admin',
+    }
+    await server.inject(injectOptionsUsers);
 
-    /*
     const injectOptions = {
         method: 'GET',
         url: '/api/v1/brasserie/populate',
@@ -92,7 +90,7 @@ module.exports.start = async () => {
     }
     await server.inject(injectOptionsBeers);
     console.log('-- Populate done --');
-    */
+
     await server.start();
 
     console.log(`Server running at: ${server.info.uri}`);
@@ -104,4 +102,15 @@ process.on('unhandledRejection', (err) => {
     console.log(err);
     process.exit(1);
 });
+
+
+module.exports.clearUsers = async () => {
+    await authControleur.clearAll();
+    const injectOptions = {
+        method: 'GET',
+        url: '/api/v1/generate/1/admin',
+    }
+    await server.inject(injectOptions);
+}
+
 

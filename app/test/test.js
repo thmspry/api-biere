@@ -2,8 +2,8 @@
 
 const Lab = require('@hapi/lab');
 const {expect} = require('@hapi/code');
-const {afterEach, beforeEach, describe, it} = exports.lab = Lab.script();
-const {init} = require('../lib/server');
+const {afterEach, beforeEach, before, describe, it} = exports.lab = Lab.script();
+const {init, clearUsers} = require('../lib/server');
 
 const beerTest = {"id":12345,"name":"testName","state":"stateTest","breweryId":1}
 
@@ -24,6 +24,7 @@ describe('POST /', () => {
                 url: '/api/v1/biere',
                 payload: '{"id":12345,"name":"testName","state":"stateTest","breweryId":1}'
             });
+        console.log(res.result);
         expect(res.statusCode).to.equal(201)
         expect(res.result).to.equal(beerTest)
     })
@@ -55,8 +56,6 @@ describe('POST /', () => {
                 url: '/api/v1/biere',
                 payload: '{"id":"123342213","name":"test","state":"testState","breweryId":1234525342}'
             });
-        console.log(4);
-        console.log(res.result);
         expect(res.statusCode).to.equal(400)
         expect(res.result).to.equal({error:"brewery id ne correspond a aucun brewery"})
     })
@@ -64,6 +63,10 @@ describe('POST /', () => {
 
 describe('GET ', () => {
     let server;
+
+    before(async () => {
+        await clearUsers();
+    })
 
     beforeEach(async () => {
         server = await init();
