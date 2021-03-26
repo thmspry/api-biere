@@ -91,7 +91,7 @@ module.exports = {
             where : {breweryId: breweryId}})
             .then((result) => {
                 if (result.length === 0) {
-                    return h.response(result).code(404)
+                    return h.response({error: 'not found'}).code(404)
                 }
                 return h.response(result).code(200)
             })
@@ -101,10 +101,10 @@ module.exports = {
         const id = request.params.id;
         return await Beer.destroy({where :{id:id}})
             .then((result) => {
-                if (result === null) {
+                if (result === 0) {
                     return h.response({error:"pas de biere trouvé avec cet id"}).code(404)
                 } else {
-                    return h.response(result).code(200)
+                    return h.response({message:"Biere d'id n°"+ id + " suppriméee"}).code(200)
                 }
         })
     },
