@@ -6,6 +6,7 @@ const {afterEach, beforeEach, before, describe, it} = exports.lab = Lab.script()
 const {init, clearUsers} = require('../lib/server');
 
 const beerTest = {"id":12345,"name":"testName","state":"stateTest","breweryId":1}
+const breweryTest = {"id":5,"nameBreweries":"Abbaye de Leffe","city":"Dinant"}
 
 
 describe('POST /', () => {
@@ -59,6 +60,41 @@ describe('POST /', () => {
         expect(res.statusCode).to.equal(400)
         expect(res.result).to.equal({error:"brewery id ne correspond a aucun brewery"})
     })
+
+    // ---------------- BRASSERIE ----------------
+
+    it('ajout ok payload Br', async () => {
+        const res = await server
+            .inject({
+                method: 'post',
+                url: '/api/v1/brasserie',
+                payload: '{"id":123456,"nameBreweries":"testName","city":"cityTest"}'
+            });
+        expect(res.statusCode).to.equal(201)
+        expect(res.result).to.equal(beerTest)
+    })
+    it('ajout ko breweries already exist', async () => {
+        const res = await server
+            .inject({
+                method: 'post',
+                url: '/api/v1/brasserie',
+                payload: '{"id":2,"nameBreweries":"testName","city":"cityTest"}'
+            });
+        expect(res.statusCode).to.equal(403)
+        expect(res.result).to.equal({error:"Il existe déjà une biere avec cet ID"})
+    })
+    it('ajout ko json invalide Br', async () => {
+        const res = await server
+            .inject({
+                method: 'post',
+                url: '/api/v1/brasserie',
+                payload: '{"id":"jesuisunsstring","nameBreweries":"testName","city":"cityTest"}'
+            });
+        expect(res.statusCode).to.equal(400)
+        expect(res.result).to.equal({error:"JSON invalide"})
+
+    })
+
 })
 
 describe('GET ', () => {
@@ -156,6 +192,59 @@ describe('GET ', () => {
         expect(res.statusCode).to.equal(400);
         expect(res.result).to.equal({ error: 'user ID already exists' });
     });
+
+
+    // ---------------- BRASSERIE ----------------
+
+    it('getall Br', async () => {
+        const res = await server.inject({
+            method: 'get',
+            url: '/api/v1/brasserie',
+        });
+        expect(res.statusCode).to.equal(200)
+        expect(res.result).to.be.instanceof(Array);
+    })
+
+    it('get by id ok Br', async () => {
+        const res = await server
+            .inject({
+                method: 'get',
+                url: '/api/v1/brasserie/id/5',
+            });
+        expect(res.statusCode).to.equal(200)
+        expect(res.result).to.be.instanceof(Object);
+        expect(res.result.dataValues).to.equal(breweryTest)
+    })
+
+    it('get by id ko Br', async () => {
+        const res = await server
+            .inject({
+                method: 'get',
+                url: '/api/v1/brasserie/id/99999444844484842',
+            });
+        expect(res.statusCode).to.equal(404)
+        expect(res.result).to.equal({"error":"not found"})
+    })
+
+    it('get by city ok Br', async () => {
+        const res = await server
+            .inject({
+                method: 'get',
+                url: `/api/v1/brasserie/state/Dinant`,
+            });
+        expect(res.statusCode).to.equal(200)
+        expect(res.result).to.be.instanceof(Array);
+        expect(res.result[0].dataValues).to.equal(breweryTest)
+    })
+    it('get by city ko Br', async () => {
+        const res = await server
+            .inject({
+                method: 'get',
+                url: `/api/v1/brasserie/state/pftpktptptk`,
+            });
+        expect(res.statusCode).to.equal(404)
+        expect(res.result).to.equal({error : "not found"})
+    })
 });
 
 describe('PATCH /', () => {
@@ -223,5 +312,68 @@ describe('DELETE /', () => {
         });
         expect(res.statusCode).to.equal(404)
         expect(res.result).to.equal({error:"pas de biere trouvé avec cet id"})
+    })
+
+
+    // ---------------- BRASSERIE ----------------
+
+    it('Suppression ok id 5 Br', async () => {
+        const res = await server.inject({
+            method: 'delete',
+            url: `/api/v1/biere/delete/${breweryTest.id}`,
+        });
+        expect(res.result).to.equal(breweryTest)
+        expect(res.statusCode).to.equal(200)
+    })
+    it('Suppression ko id 9999999999', async () => {
+        const res = await server.inject({
+            method: 'delete',
+            url: `/api/v1/biere/delete/9999999999`,
+        });
+        expect(res.statusCode).to.equal(404)
+        expect(res.result).to.equal({error:"pas de brasserie trouvé avec cet id"})
+    })
+
+
+})
+
+describe('PUT /', () => {
+    let server;
+    beforeEach(async () => {
+        server = await init();
+    });
+    afterEach(async () => {
+        await server.stop();
+    });
+
+    it('update ok du nom de la brasseries id=5', async () => {
+        const res = await server
+            .inject({
+                method: 'put',
+                url: `/api/v1/brasserie/${breweryTest.id}`,
+                payload: '{"id": 2222222222,"nameBreweries":"testName","city":"cityTest"}'
+            });
+        beerTest.name = "test2"
+        expect(res.statusCode).to.equal(200)
+        expect(res.result.dataValues).to.equal({"id": 2222222222,"nameBreweries":"testName","city":"cityTest"})
+    })
+    it('update ko id brasseries existe deja', async () => {
+        const res = await server.inject({
+            method: 'put',
+            url: `/api/v1/brasserie/${breweryTest.id}`,
+            payload: '{"id":6,"nameBreweries":"testName","city":"cityTest"}'
+        });
+        expect(res.statusCode).to.equal(404)
+        expect(res.result).to.equal({error: "La brasserie a modifier n'existe pas"})
+    })
+
+    it('update ko id brasseries a modif introuvable', async () => {
+        const res = await server.inject({
+            method: 'put',
+            url: '/api/v1/brasserie/2314524373',
+            payload: '{"name":"test2","state":"testState","breweryId":1}'
+        });
+        expect(res.statusCode).to.equal(404)
+        expect(res.result).to.equal({error: "La brasserie a modifier n'existe pas"})
     })
 })
