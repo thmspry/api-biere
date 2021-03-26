@@ -9,6 +9,15 @@ const schemaBrewery = Joi.object({
 
 const schemaBreweries =  Joi.array().items(schemaBrewery);
 
+const schemaBeer = Joi.object({
+    id: Joi.number(),
+    name: Joi.string(),
+    state : Joi.string(),
+    breweryId : Joi.number()
+});
+
+const schemaBeers =  Joi.array().items(schemaBrewery);
+
 const brewerieControleur = require("../controleur/brewerie_controleur");
 const beerControleur = require("../controleur/beer_controleur");
 const authControleur = require("../controleur/authentification_controleur");
@@ -21,14 +30,14 @@ const routes = [
         path: '/api/v1/brasserie',
         options: {
             auth: false,
-            description: 'Obtenir la liste de toutes les brasseries',
+            description: 'Obtenirla liste de toutes les brasseries',
             notes: 'Renvoie un tableau de brasseries',
             plugins: {
                 'hapi-swagger': {
                     responses: {
                         '200': {
                             'description': 'Bonne requête',
-                            schema : schemaBreweries.default([{id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'},
+                            schema:  schemaBreweries.default([{id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'},
                                 {id: 177, nameBreweries: 'Brasserie De Saint Sylvestre', city: 'St-Sylvestre-Cappel'}])
                         },
                         '404': {
@@ -60,6 +69,7 @@ const routes = [
 
                 }
             },
+
             tags: ['api','get','populate','brasseries','brewerie'],
             handler: brewerieControleur.populateBreweries
         }
@@ -76,18 +86,26 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '200': {
-                            'description': 'Bonne requête : objet Brasserie'
+                            'description': 'Bonne requête : objet Brasserie',
+                            schema : schemaBrewery.default({id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'})
                         },
                         '404': {
                             'description': 'Not found : Pas de brasserie avec cet ID'
                         }
                     },
 
-                }
+                },
+            },
+            validate: {
+                params: Joi.object({
+                    id: Joi.number()
+                        .required()
+                        .description("L'ID de la brasserie")})
             },
             tags: ['api', 'get', 'recherche', 'id','brasseries','brewerie'],
             handler: brewerieControleur.findById
         },
+
 
     },
 
@@ -103,7 +121,9 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '200': {
-                            'description': 'Bonne requête : objet Brasserie'
+                            'description': 'Bonne requête : objet Brasserie',
+                            schema:  schemaBreweries.default([{id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'},
+                                {id: 177, nameBreweries: 'Brasserie De Saint Sylvestre', city: 'St-Sylvestre-Cappel'}])
                         },
                         '404': {
                             'description': 'Not found : Aucune brasserie n est de cette ville'
@@ -111,6 +131,12 @@ const routes = [
                     },
 
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    city: Joi.string()
+                        .required()
+                        .description("Une ville")})
             },
             tags: ['api', 'get', 'recherche', 'city','brasseries','brewerie'],
             handler: brewerieControleur.findByCity
@@ -129,7 +155,8 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '201': {
-                            'description': 'Bonne requête : La brasserie est ajoutée'
+                            'description': 'Bonne requête : La brasserie est ajoutée',
+                            schema : schemaBrewery.default({id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'})
                         },
                         '404': {
                             'description': 'Erreur format du payload'
@@ -160,7 +187,8 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '200': {
-                            'description': 'Bonne requête : La brasserie est supprimée'
+                            'description': 'Bonne requête : La brasserie est supprimée',
+                            schema : schemaBrewery.default({id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'})
                         },
                         '404': {
                             'description': 'Erreurs diverses'
@@ -168,6 +196,12 @@ const routes = [
                     },
 
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    id: Joi.number()
+                        .required()
+                        .description("L'ID de la brasserie")})
             },
             tags: ['api', 'get', 'delete', 'id','brasseries','brewerie'],
             handler: brewerieControleur.deleteById
@@ -184,7 +218,8 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '201': {
-                            'description': 'Bonne requête : La brasserie est modifiée'
+                            'description': 'Bonne requête : La brasserie est modifiée',
+                            schema : schemaBrewery.default({id: 165, nameBreweries: 'Brasserie Bnifontaine', city: 'Bnifontaine'})
                         },
                         '404': {
                             'description': 'Erreurs format JSon du payload ou ID déjà pris si sa valeur est changé ou bien id d une brasserie non existant'
@@ -192,6 +227,12 @@ const routes = [
                     },
 
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    id: Joi.number()
+                        .required()
+                        .description("L'ID de la brasserie")})
             },
             tags: ['api', 'get', 'edit','modify', 'id','brasseries','brewerie'],
             handler: brewerieControleur.editById
@@ -213,7 +254,8 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '200': {
-                            'description': 'Bonne requête : objet Biere'
+                            'description': 'Bonne requête : objet Biere',
+                            schema:  schemaBeer.default({id: 165, name: 'La beer', state: 'Germany', breweryId :3})
                         },
                         '404': {
                             'description': 'Not found : Pas de biere avec cet ID'
@@ -221,6 +263,12 @@ const routes = [
                     },
 
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    id: Joi.number()
+                        .required()
+                        .description("L'ID de la bière")})
             },
             tags: ['api', 'get', 'recherche', 'id','biere','beer'],
             handler: beerControleur.findById
@@ -238,7 +286,9 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '200': {
-                            'description': 'Bonne requête : objet Biere'
+                            'description': 'Bonne requête : objet Biere',
+                            schema:  schemaBeers.default([{id: 165, name: 'La beer', state: 'Germany', breweryId :3},
+                                {id: 170, name: 'La beer', state: 'Germany', breweryId :3}])
                         },
                         '404': {
                             'description': 'Not found : Pas de biere provenant de cet état (state)'
@@ -246,6 +296,12 @@ const routes = [
                     },
 
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    state: Joi.string()
+                        .required()
+                        .description("Le pays d'origine de la biere")})
             },
             tags: ['api', 'get', 'biere', 'beer','recherche', 'state'],
             handler: beerControleur.findByState
@@ -262,7 +318,9 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '200': {
-                            'description': 'Bonne requête : objet Biere'
+                            'description': 'Bonne requête : objet Biere',
+                            schema:  schemaBeers.default([{id: 165, name: 'La beer', state: 'Germany', breweryId :3},
+                                {id: 165, name: 'La beer CREAMY DE LUXE', state: 'Germany', breweryId :3}])
                         },
                         '404': {
                             'description': 'Not found : Pas de biere provenant de cette brasserie (brewery)'
@@ -270,6 +328,12 @@ const routes = [
                     },
 
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    breweryId: Joi.number()
+                        .required()
+                        .description("L'ID de la brasserie relative à la bière")})
             },
             tags: ['api', 'get', 'biere', 'beer','recherche', 'breweryId'],
             handler: beerControleur.findByBrewId
@@ -285,7 +349,8 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '200': {
-                            'description': 'Bonne requête : la biere est supprimée + objet Biere '
+                            'description': 'Bonne requête : la biere est supprimée + objet Biere ',
+                            schema:  schemaBeer.default({id: 165, name: 'La beer', state: 'Germany', breweryId :3})
                         },
                         '401': {
                             'description': 'Erreurs authentification'
@@ -296,6 +361,12 @@ const routes = [
                     },
 
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    id: Joi.number()
+                        .required()
+                        .description("L'ID de la bière")})
             },
             tags: ['api', 'delete', 'biere', 'beer','suppression', 'id'],
             handler: beerControleur.deleteById
@@ -310,7 +381,8 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '201': {
-                            'description': 'Bonne requête : la biere est ajoutée + objet Biere '
+                            'description': 'Bonne requête : la biere est ajoutée + objet Biere ',
+                            schema:  schemaBeer.default({id: 165, name: 'La beer', state: 'Germany', breweryId :3})
                         },
                         '403': {
                             'description': 'Erreurs diverses'
@@ -331,7 +403,8 @@ const routes = [
                 'hapi-swagger': {
                     responses: {
                         '202': {
-                            'description': 'Bonne requête : la biere est modifiée + objet Biere '
+                            'description': 'Bonne requête : la biere est modifiée + objet Biere ',
+                            schema:  schemaBeer.default({id: 165, name: 'La beer', state: 'Germany', breweryId :3})
                         },
                         '400': {
                             'description': 'Erreurs diverses'
@@ -344,6 +417,12 @@ const routes = [
                         }
                     },
                 }
+            },
+            validate: {
+                params: Joi.object({
+                    id: Joi.number()
+                        .required()
+                        .description("L'ID de la bière")})
             },
             tags: ['api', 'patch', 'biere', 'beer','update','edit','modifier'],
             handler: beerControleur.update
@@ -361,6 +440,8 @@ const routes = [
                     responses: {
                         '200': {
                             'description': 'Bonne requête',
+                            schema:  schemaBeers.default([{id: 165, name: 'La beer', state: 'Germany', breweryId :3},
+                                {id: 170, name: 'La beer DE LUXE', state: 'Germany', breweryId :3}])
                         },
                     },
 
@@ -412,11 +493,29 @@ const routes = [
 
                 }
             },
-
+            validate: {
+                params: Joi.object({
+                    id: Joi.number()
+                        .required()
+                        .description("Un ID d'authentification"),
+                    name: Joi.string()
+                        .required()
+                        .description('Un nom d\'authentification')
+                })
+            },
             tags: ['api','register','get'],
             handler: authControleur.register
         },
     },
 
+
+    // ------- Route par défaut -------
+    {
+        method: "*",
+        path: '/{any*}',
+        handler: (request, h) => {
+            return h.response({error: "Page Not FOUND !"}).code(404)
+        }
+    },
 ];
 module.exports = routes;

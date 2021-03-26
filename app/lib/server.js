@@ -25,7 +25,7 @@ const servApollo = new ApolloServer({
 });
 
 
-const server = Hapi.server({
+const server = Hapi.server( {
     port: 3000,
     host: 'localhost'
 });

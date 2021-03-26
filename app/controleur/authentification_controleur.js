@@ -45,7 +45,7 @@ module.exports = {
             return h.response(message).code(200);
         }
     },
-    validAuth: async function (id) {
+    validAuth: async function (id) { // Determine si l'authentification est valide
         return await User.findAll({
             where : {
                 id: id
@@ -54,7 +54,7 @@ module.exports = {
             return result.length !== 0;
         })
     },
-    clearAll: async function() {
+    clearAll: async function() { // Remet à zero
         await User.truncate();
     }
 }

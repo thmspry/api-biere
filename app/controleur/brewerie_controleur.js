@@ -2,7 +2,7 @@
 const fs = require('fs');
 const csv = require('fast-csv');
 
-const Models = require("../model/");
+const Models = require("../model/")
 const { Op } = require("sequelize");
 const brewerieFileName = require('../config/config').brewerieFileName;
 const Brewery = require('../model').Brewery;

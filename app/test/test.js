@@ -92,8 +92,8 @@ describe('POST /', () => {
             });
         expect(res.statusCode).to.equal(400)
         expect(res.result).to.equal({error:"JSON invalide"})
-
     })
+
     it('ajout ko breweryId ne correspond à aucun brewery', async () => {
         const res = await server
             .inject({
