@@ -30,7 +30,7 @@ const routes = [
         path: '/api/v1/brasserie',
         options: {
             auth: false,
-            description: 'Obtenirla liste de toutes les brasseries',
+            description: 'Obtenir la liste de toutes les brasseries',
             notes: 'Renvoie un tableau de brasseries',
             plugins: {
                 'hapi-swagger': {
